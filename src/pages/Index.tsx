@@ -22,9 +22,9 @@ const NOTIFICATIONS: Notification[] = [
 ];
 
 const NOTIF_META = {
-  info: { icon: "Info", color: "#3B82F6", bg: "#EFF6FF" },
-  success: { icon: "CheckCircle", color: "#16A34A", bg: "#DCFCE7" },
-  warning: { icon: "AlertTriangle", color: "#D97706", bg: "#FEF3C7" },
+  info: { icon: "Info", color: "var(--sky)", bg: "var(--sky-bg)" },
+  success: { icon: "CheckCircle", color: "var(--mint)", bg: "var(--mint-bg)" },
+  warning: { icon: "AlertTriangle", color: "var(--coral)", bg: "var(--coral-bg)" },
 };
 
 const NAV_ITEMS: { id: Tab; label: string; icon: string }[] = [
@@ -465,22 +465,22 @@ function SupportTab() {
   const contacts = [
     {
       icon: "MessageSquare",
-      bg: "#EFF6FF",
-      color: "#3B82F6",
+      bg: "var(--sky-bg)",
+      color: "var(--sky)",
       title: "Онлайн-чат",
       sub: "Мы онлайн с 9:00 до 20:00",
     },
     {
       icon: "Mail",
-      bg: "#FEF3C7",
-      color: "#D97706",
+      bg: "var(--peach-bg)",
+      color: "var(--orange)",
       title: "Email",
       sub: "support@logosha.ru",
     },
     {
       icon: "Phone",
-      bg: "#DCFCE7",
-      color: "#16A34A",
+      bg: "var(--mint-bg)",
+      color: "var(--mint)",
       title: "Телефон",
       sub: "+7 (123) 456-78-90",
     },
@@ -498,11 +498,11 @@ function SupportTab() {
       {/* Value props */}
       <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
         {[
-          { icon: "Zap", color: "#3B82F6", bg: "#EFF6FF", title: "Быстрый ответ", desc: "Ответим в течение 24 часов" },
-          { icon: "Shield", color: "#F5820D", bg: "rgba(245,130,13,0.1)", title: "Надёжно", desc: "Ваши данные под защитой" },
-          { icon: "Heart", color: "#EF4444", bg: "#FEE2E2", title: "С заботой", desc: "Каждый запрос важен для нас" },
+          { icon: "Zap", color: "var(--sky)", bg: "var(--sky-bg)", title: "Быстрый ответ", desc: "Ответим в течение 24 часов", accent: "card-accent-sky" },
+          { icon: "Shield", color: "var(--orange)", bg: "var(--peach-bg)", title: "Надёжно", desc: "Ваши данные под защитой", accent: "card-accent-orange" },
+          { icon: "Heart", color: "var(--coral)", bg: "var(--coral-bg)", title: "С заботой", desc: "Каждый запрос важен для нас", accent: "card-accent-coral" },
         ].map((item) => (
-          <div key={item.title} className="lk-card flex flex-col items-center text-center gap-2 py-6">
+          <div key={item.title} className={`lk-card flex flex-col items-center text-center gap-2 py-6 ${item.accent}`}>
             <div
               style={{ width: 52, height: 52, borderRadius: 14, background: item.bg, color: item.color, display: "flex", alignItems: "center", justifyContent: "center" }}
             >
