@@ -14,632 +14,631 @@ interface Notification {
 }
 
 const NOTIFICATIONS: Notification[] = [
-  { id: 1, type: "success", title: "Подписка активирована", text: "Ваш план Pro успешно продлён на 30 дней.", time: "2 мин назад", read: false },
+  { id: 1, type: "success", title: "Подписка активирована", text: "Ваш план Премиум продлён на 30 дней.", time: "2 мин назад", read: false },
   { id: 2, type: "warning", title: "Срок оплаты", text: "До следующего списания осталось 5 дней.", time: "1 час назад", read: false },
-  { id: 3, type: "info", title: "Новый ответ в поддержке", text: "Менеджер ответил на ваш тикет #1042.", time: "3 часа назад", read: false },
+  { id: 3, type: "info", title: "Новый ответ в поддержке", text: "Менеджер ответил на ваше обращение.", time: "3 часа назад", read: false },
   { id: 4, type: "info", title: "Обновление системы", text: "Плановые работы завершены, всё работает стабильно.", time: "Вчера", read: true },
   { id: 5, type: "success", title: "Данные сохранены", text: "Профиль успешно обновлён.", time: "2 дня назад", read: true },
 ];
 
-const NOTIF_ICONS = {
-  info: { icon: "Info", color: "text-blue-500", bg: "bg-blue-50" },
-  success: { icon: "CheckCircle", color: "text-green-500", bg: "bg-green-50" },
-  warning: { icon: "AlertTriangle", color: "text-amber-500", bg: "bg-amber-50" },
+const NOTIF_META = {
+  info: { icon: "Info", color: "#3B82F6", bg: "#EFF6FF" },
+  success: { icon: "CheckCircle", color: "#16A34A", bg: "#DCFCE7" },
+  warning: { icon: "AlertTriangle", color: "#D97706", bg: "#FEF3C7" },
 };
+
+const NAV_ITEMS: { id: Tab; label: string; icon: string }[] = [
+  { id: "profile", label: "Мои данные", icon: "User" },
+  { id: "subscriptions", label: "Мои подписки", icon: "CreditCard" },
+  { id: "support", label: "Поддержка", icon: "MessageCircle" },
+];
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState<Tab>("profile");
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>(NOTIFICATIONS);
   const [profileData, setProfileData] = useState({
-    name: "Алексей Смирнов",
-    email: "a.smirnov@example.com",
+    name: "Мария Иванова",
+    email: "ivanova@example.ru",
     phone: "+7 (999) 123-45-67",
-    city: "Москва",
   });
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+  const markAllRead = () => setNotifications((p) => p.map((n) => ({ ...n, read: true })));
+  const markRead = (id: number) => setNotifications((p) => p.map((n) => n.id === id ? { ...n, read: true } : n));
 
-  const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const pageTitles: Record<Tab, string> = {
+    profile: "Личный кабинет",
+    subscriptions: "Личный кабинет",
+    support: "Личный кабинет",
   };
-
-  const markRead = (id: number) => {
-    setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
-  };
-
-  const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: "profile", label: "Мои данные", icon: "User" },
-    { id: "subscriptions", label: "Подписки", icon: "CreditCard" },
-    { id: "support", label: "Поддержка", icon: "MessageCircle" },
-  ];
 
   return (
-    <div className="page-bg">
-      <div className="relative z-10 min-h-screen">
-        {/* Header */}
-        <header className="px-6 py-5 flex items-center justify-between max-w-5xl mx-auto">
-          <div className="flex items-center gap-3">
-            <div
-              className="avatar-gradient"
-              style={{ width: 44, height: 44, fontSize: 18 }}
-            >
-              АС
-            </div>
-            <div>
-              <div
-                className="font-bold text-gray-800"
-                style={{ fontFamily: "'Golos Text', sans-serif", fontSize: 16 }}
-              >
-                {profileData.name}
-              </div>
-              <div className="text-xs text-gray-500">Личный кабинет</div>
-            </div>
-          </div>
+    <div className="lk-layout">
+      {/* ── Sidebar ── */}
+      <aside className="lk-sidebar">
+        <div className="lk-sidebar-logo">
+          <div style={{ fontSize: 36 }}>🦕</div>
+          <div className="lk-sidebar-brand">Логоша</div>
+          <div className="lk-sidebar-tagline">Большой опыт работы<br />в области с детьми</div>
+        </div>
 
-          {/* Notification bell */}
-          <div className="relative">
+        <nav className="lk-nav">
+          {NAV_ITEMS.map((item) => (
             <button
-              onClick={() => setNotifOpen((v) => !v)}
-              className="relative p-3 rounded-2xl transition-all"
-              style={{
-                background: notifOpen
-                  ? "rgba(102,126,234,0.12)"
-                  : "rgba(255,255,255,0.7)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.5)",
-              }}
+              key={item.id}
+              onClick={() => { setActiveTab(item.id); setNotifOpen(false); }}
+              className={`lk-nav-item${activeTab === item.id ? " active" : ""}`}
             >
-              <Icon name="Bell" size={22} className="text-gray-600" />
-              {unreadCount > 0 && (
-                <span className="notif-badge">{unreadCount}</span>
-              )}
+              <Icon name={item.icon as any} size={16} />
+              {item.label}
             </button>
+          ))}
+        </nav>
 
-            {notifOpen && (
-              <div className="notif-panel">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                  <span
-                    className="font-bold text-gray-800"
-                    style={{ fontFamily: "'Golos Text', sans-serif", fontSize: 16 }}
-                  >
-                    Уведомления
-                  </span>
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={markAllRead}
-                      className="text-xs font-semibold"
-                      style={{ color: "#667eea" }}
-                    >
-                      Прочитать все
-                    </button>
-                  )}
-                </div>
-                <div style={{ maxHeight: 360, overflowY: "auto" }}>
-                  {notifications.map((n) => {
-                    const meta = NOTIF_ICONS[n.type];
-                    return (
-                      <div
-                        key={n.id}
-                        onClick={() => markRead(n.id)}
-                        className="flex gap-3 px-5 py-4 cursor-pointer transition-all"
-                        style={{
-                          background: n.read ? "transparent" : "rgba(102,126,234,0.04)",
-                          borderBottom: "1px solid rgba(0,0,0,0.04)",
-                        }}
+        <div className="lk-sidebar-bottom">
+          <button className="lk-logout-btn">
+            <Icon name="LogOut" size={15} />
+            Выйти из аккаунта
+          </button>
+        </div>
+      </aside>
+
+      {/* ── Main ── */}
+      <div className="lk-main">
+        {/* Header */}
+        <header className="lk-header">
+          <span className="lk-header-title">{pageTitles[activeTab]}</span>
+          <div className="lk-header-right">
+            {/* Bell */}
+            <div className="relative">
+              <button className="lk-bell-btn" onClick={() => setNotifOpen((v) => !v)}>
+                <Icon name="Bell" size={20} />
+                {unreadCount > 0 && <span className="lk-notif-badge">{unreadCount}</span>}
+              </button>
+
+              {notifOpen && (
+                <div className="notif-panel">
+                  <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+                    <span style={{ fontFamily: "'Golos Text'", fontWeight: 700, fontSize: 15, color: "#1A1A1A" }}>
+                      Уведомления
+                    </span>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllRead}
+                        style={{ fontSize: 12, fontWeight: 600, color: "var(--orange)", fontFamily: "'Golos Text'" }}
                       >
+                        Прочитать все
+                      </button>
+                    )}
+                  </div>
+                  <div style={{ maxHeight: 340, overflowY: "auto" }}>
+                    {notifications.map((n) => {
+                      const m = NOTIF_META[n.type];
+                      return (
                         <div
-                          className={`${meta.bg} ${meta.color} rounded-xl flex items-center justify-center flex-shrink-0`}
-                          style={{ width: 36, height: 36 }}
+                          key={n.id}
+                          onClick={() => markRead(n.id)}
+                          className="flex gap-3 px-5 py-3.5 cursor-pointer"
+                          style={{
+                            background: n.read ? "transparent" : "rgba(245,130,13,0.03)",
+                            borderBottom: "1px solid #F5F5F5",
+                          }}
                         >
-                          <Icon name={meta.icon as any} size={16} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <span
-                              className="font-semibold text-gray-800 text-sm"
-                              style={{ fontFamily: "'Golos Text', sans-serif" }}
-                            >
-                              {n.title}
-                            </span>
-                            {!n.read && (
-                              <span
-                                className="flex-shrink-0 rounded-full mt-1"
-                                style={{
-                                  width: 7,
-                                  height: 7,
-                                  background: "linear-gradient(135deg, #667eea, #764ba2)",
-                                }}
-                              />
-                            )}
+                          <div
+                            className="rounded-xl flex items-center justify-center flex-shrink-0"
+                            style={{ width: 34, height: 34, background: m.bg, color: m.color }}
+                          >
+                            <Icon name={m.icon as any} size={15} />
                           </div>
-                          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                            {n.text}
-                          </p>
-                          <span className="text-xs text-gray-400 mt-1 block">
-                            {n.time}
-                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <span style={{ fontWeight: 600, fontSize: 13, color: "#1A1A1A", fontFamily: "'Golos Text'" }}>
+                                {n.title}
+                              </span>
+                              {!n.read && (
+                                <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--orange)", flexShrink: 0, marginTop: 4, display: "block" }} />
+                              )}
+                            </div>
+                            <p style={{ fontSize: 12, color: "#888", marginTop: 2, lineHeight: 1.4 }}>{n.text}</p>
+                            <span style={{ fontSize: 11, color: "#BBBBBB", marginTop: 3, display: "block" }}>{n.time}</span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
+              )}
+            </div>
+
+            {/* User */}
+            <button className="lk-user-btn">
+              <div className="lk-user-avatar">
+                {profileData.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}
               </div>
-            )}
+              <div className="lk-user-info">
+                <div className="lk-user-name">{profileData.name}</div>
+                <div className="lk-user-email">{profileData.email}</div>
+              </div>
+              <Icon name="ChevronDown" size={14} style={{ color: "#AAA", marginLeft: 2 }} />
+            </button>
           </div>
         </header>
 
-        {/* Main */}
-        <main className="px-6 pb-12 max-w-5xl mx-auto">
-          {/* Tabs */}
-          <div className="glass-card p-2 flex gap-1 mb-8">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  setNotifOpen(false);
-                }}
-                className={`tab-item${activeTab === tab.id ? " active" : ""}`}
-              >
-                <Icon name={tab.icon as any} size={17} />
-                {tab.label}
-              </button>
+        {/* Content */}
+        <main className="lk-content animate-fade-in" key={activeTab}>
+          {activeTab === "profile" && <ProfileTab data={profileData} setData={setProfileData} />}
+          {activeTab === "subscriptions" && <SubscriptionsTab />}
+          {activeTab === "support" && <SupportTab />}
+        </main>
+
+        {/* Footer */}
+        <footer className="lk-footer">
+          <span>© 2024 Логоша. Все права защищены.</span>
+          <div className="flex gap-6">
+            <a href="#">Условия использования</a>
+            <a href="#">Политика конфиденциальности</a>
+            <a href="#">Контакты</a>
+          </div>
+          <div className="flex gap-3">
+            {["🎵", "✈️", "▶️"].map((ico, i) => (
+              <span key={i} style={{ fontSize: 16, cursor: "pointer", opacity: 0.7 }}>{ico}</span>
             ))}
           </div>
-
-          {/* Content */}
-          <div className="animate-fade-in" key={activeTab}>
-            {activeTab === "profile" && (
-              <ProfileTab data={profileData} setData={setProfileData} />
-            )}
-            {activeTab === "subscriptions" && <SubscriptionsTab />}
-            {activeTab === "support" && <SupportTab />}
-          </div>
-        </main>
+        </footer>
       </div>
 
       {notifOpen && (
-        <div
-          className="fixed inset-0 z-0"
-          onClick={() => setNotifOpen(false)}
-        />
+        <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
       )}
     </div>
   );
 }
 
-/* ─── Profile Tab ─── */
+/* ═══════════════════════════════════════
+   PROFILE TAB
+═══════════════════════════════════════ */
 function ProfileTab({
   data,
   setData,
 }: {
-  data: { name: string; email: string; phone: string; city: string };
+  data: { name: string; email: string; phone: string };
   setData: (d: any) => void;
 }) {
-  const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(data);
-
-  const handleSave = () => {
-    setData(form);
-    setEditing(false);
-  };
-
-  const fields = [
-    { key: "name", label: "Имя и фамилия", icon: "User", placeholder: "Введите имя" },
-    { key: "email", label: "Email", icon: "Mail", placeholder: "example@mail.com" },
-    { key: "phone", label: "Телефон", icon: "Phone", placeholder: "+7 (___) ___-__-__" },
-    { key: "city", label: "Город", icon: "MapPin", placeholder: "Москва" },
-  ];
+  const [showPw, setShowPw] = useState(false);
+  const [showPw2, setShowPw2] = useState(false);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {/* Avatar card */}
-      <div className="glass-card p-8 flex flex-col items-center gap-4 md:col-span-1">
-        <div
-          className="avatar-gradient"
-          style={{ width: 96, height: 96, fontSize: 36 }}
-        >
-          {data.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}
-        </div>
-        <div className="text-center">
-          <div
-            className="font-bold text-gray-800 text-xl"
-            style={{ fontFamily: "'Golos Text', sans-serif" }}
-          >
-            {data.name}
-          </div>
-          <div className="text-sm text-gray-500 mt-1">{data.email}</div>
-        </div>
-        <div
-          className="w-full text-center py-2 px-4 rounded-2xl text-sm font-semibold"
-          style={{
-            background: "linear-gradient(135deg, rgba(102,126,234,0.1), rgba(240,147,251,0.1))",
-            color: "#764ba2",
-          }}
-        >
-          ✦ Pro-аккаунт
-        </div>
-        <div className="w-full space-y-3 mt-2">
-          {[
-            { label: "На сервисе", value: "с марта 2024" },
-            { label: "Тикетов", value: "3" },
-            { label: "Устройств", value: "2" },
-          ].map((item) => (
-            <div key={item.label} className="flex justify-between text-sm">
-              <span className="text-gray-500">{item.label}</span>
-              <span className="font-semibold text-gray-700">{item.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+    <>
+      <h1 className="lk-page-title">Мои данные</h1>
 
-      {/* Form card */}
-      <div className="glass-card p-8 md:col-span-2">
-        <div className="flex items-center justify-between mb-6">
-          <h2
-            className="font-bold text-gray-800 text-xl"
-            style={{ fontFamily: "'Golos Text', sans-serif" }}
-          >
-            Личные данные
-          </h2>
-          {!editing ? (
-            <button
-              onClick={() => setEditing(true)}
-              className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl transition-all"
-              style={{ background: "rgba(102,126,234,0.1)", color: "#667eea" }}
-            >
-              <Icon name="Pencil" size={15} />
-              Редактировать
-            </button>
-          ) : (
-            <div className="flex gap-2">
-              <button
-                onClick={() => { setForm(data); setEditing(false); }}
-                className="text-sm font-semibold px-4 py-2 rounded-xl text-gray-500"
-                style={{ background: "rgba(0,0,0,0.05)" }}
-              >
-                Отмена
-              </button>
-              <button
-                onClick={handleSave}
-                className="gradient-btn"
-                style={{ padding: "8px 20px", fontSize: 14 }}
-              >
-                Сохранить
-              </button>
+      <div className="grid gap-6" style={{ gridTemplateColumns: "1fr 1fr" }}>
+        {/* Personal data */}
+        <div className="lk-card">
+          <div className="space-y-4">
+            <div>
+              <label className="lk-label">ФИО</label>
+              <input
+                className="lk-input"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
             </div>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {fields.map((f) => (
-            <div key={f.key}>
-              <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">
-                {f.label}
-              </label>
+            <div>
+              <label className="lk-label">E-mail</label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <Icon name={f.icon as any} size={16} />
-                </div>
                 <input
-                  className="glass-input"
-                  style={{ paddingLeft: 40 }}
-                  value={form[f.key as keyof typeof form]}
-                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                  disabled={!editing}
-                  placeholder={f.placeholder}
+                  className="lk-input"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  style={{ paddingRight: 36 }}
                 />
+                <Icon name="ChevronDown" size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
               </div>
             </div>
-          ))}
+            <div>
+              <label className="lk-label">Телефон</label>
+              <input
+                className="lk-input"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className="flex gap-3 mt-6">
+            <button className="btn-outline" onClick={() => setForm(data)}>Отменить</button>
+            <button className="btn-orange" onClick={() => setData(form)}>Сохранить</button>
+          </div>
         </div>
 
-        <div
-          className="mt-6 pt-6"
-          style={{ borderTop: "1px solid rgba(102,126,234,0.1)" }}
-        >
-          <div className="flex items-center justify-between">
+        {/* Password */}
+        <div className="lk-card">
+          <h2 style={{ fontFamily: "'Golos Text'", fontWeight: 700, fontSize: 17, color: "#1A1A1A", marginBottom: 20 }}>
+            Изменение пароля
+          </h2>
+          <div className="space-y-4">
             <div>
-              <div className="font-semibold text-gray-700 text-sm">Пароль</div>
-              <div className="text-xs text-gray-400 mt-0.5">Последнее изменение: 2 месяца назад</div>
+              <label className="lk-label">Новый пароль</label>
+              <div className="relative">
+                <input
+                  className="lk-input"
+                  type={showPw ? "text" : "password"}
+                  placeholder="Новый пароль"
+                  style={{ paddingRight: 40 }}
+                />
+                <button
+                  onClick={() => setShowPw((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  type="button"
+                >
+                  <Icon name={showPw ? "EyeOff" : "Eye"} size={16} />
+                </button>
+              </div>
             </div>
-            <button
-              className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl transition-all"
-              style={{ background: "rgba(245,87,108,0.08)", color: "#f5576c" }}
-            >
-              <Icon name="Lock" size={14} />
-              Сменить пароль
-            </button>
+            <div>
+              <label className="lk-label">Повторите пароль</label>
+              <div className="relative">
+                <input
+                  className="lk-input"
+                  type={showPw2 ? "text" : "password"}
+                  placeholder="Повторите пароль"
+                  style={{ paddingRight: 40 }}
+                />
+                <button
+                  onClick={() => setShowPw2((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  type="button"
+                >
+                  <Icon name={showPw2 ? "EyeOff" : "Eye"} size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-3 mt-6">
+            <button className="btn-outline">Отменить</button>
+            <button className="btn-orange">Сохранить</button>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
-/* ─── Subscriptions Tab ─── */
+/* ═══════════════════════════════════════
+   SUBSCRIPTIONS TAB
+═══════════════════════════════════════ */
 function SubscriptionsTab() {
-  const plans = [
-    {
-      name: "Базовый",
-      price: "Бесплатно",
-      period: "",
-      features: ["1 проект", "5 ГБ хранилища", "Email поддержка"],
-      active: false,
-      until: "",
-    },
-    {
-      name: "Pro",
-      price: "990 ₽",
-      period: "/ месяц",
-      features: ["До 10 проектов", "50 ГБ хранилища", "Приоритетная поддержка", "Аналитика"],
-      active: true,
-      until: "до 13 мая 2026",
-    },
-    {
-      name: "Бизнес",
-      price: "2 990 ₽",
-      period: "/ месяц",
-      features: ["Без лимита проектов", "500 ГБ хранилища", "24/7 поддержка", "API доступ", "Командный кабинет"],
-      active: false,
-      until: "",
-    },
+  const features = [
+    { icon: "BookOpen", title: "Доступ ко всем материалам", desc: "Более 1000+ упражнений" },
+    { icon: "Gamepad2", title: "Игры и интерактивы", desc: "Развивающие игры для детей" },
+    { icon: "Cloud", title: "100 ГБ облачного хранилища", desc: "Для ваших файлов и проектов" },
+    { icon: "Infinity", title: "Безлимитный доступ", desc: "Без ограничений по времени" },
+    { icon: "Zap", title: "Приоритетная поддержка", desc: "Быстрый ответ на ваши вопросы" },
+    { icon: "RefreshCw", title: "Регулярные обновления", desc: "Новый контент каждую неделю" },
   ];
 
-  const history = [
-    { date: "13 апр 2026", amount: "990 ₽", plan: "Pro", status: "Оплачен" },
-    { date: "13 мар 2026", amount: "990 ₽", plan: "Pro", status: "Оплачен" },
-    { date: "13 фев 2026", amount: "990 ₽", plan: "Pro", status: "Оплачен" },
+  const altPlans = [
+    { name: "Пробный", desc: "Попробуйте бесплатно" },
+    { name: "Доверяю", desc: "Стандартный доступ" },
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {plans.map((plan) => (
-          <div
-            key={plan.name}
-            className={`plan-card ${plan.active ? "active-plan" : "inactive-plan"}`}
-          >
-            {plan.active && (
-              <div
-                className="absolute top-4 right-4 text-xs font-bold px-3 py-1 rounded-full"
-                style={{ background: "rgba(255,255,255,0.25)", color: "white" }}
-              >
-                Активен
-              </div>
-            )}
-            <div
-              className={`font-bold text-xl mb-1 ${plan.active ? "text-white" : "text-gray-800"}`}
-              style={{ fontFamily: "'Golos Text', sans-serif" }}
-            >
-              {plan.name}
+    <>
+      <div className="flex items-start justify-between mb-2">
+        <div>
+          <h1 className="lk-page-title">Мои подписки</h1>
+          <p className="lk-page-subtitle">Управляйте своими подписками и тарифами</p>
+        </div>
+        <button className="btn-outline" style={{ fontSize: 13, padding: "9px 16px" }}>
+          <Icon name="Receipt" size={14} />
+          История платежей
+        </button>
+      </div>
+
+      {/* Hero subscription card */}
+      <div className="sub-hero">
+        <div className="sub-hero-top">
+          <div className="sub-hero-left">
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginBottom: 4 }}>Текущий тариф</div>
+            <div className="flex items-center gap-10 mb-2">
+              <span className="sub-plan-name">Премиум</span>
+              <span className="sub-badge">АКТИВЕН</span>
             </div>
-            <div className="flex items-end gap-1 mb-1">
-              <span
-                className={`text-3xl font-black ${plan.active ? "text-white" : "gradient-text"}`}
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                {plan.price}
-              </span>
-              <span className={`text-sm mb-1 ${plan.active ? "text-white/70" : "text-gray-500"}`}>
-                {plan.period}
-              </span>
-            </div>
-            {plan.until && (
-              <div
-                className="text-xs mb-4 px-3 py-1.5 rounded-xl inline-block"
-                style={{ background: "rgba(255,255,255,0.2)", color: "white" }}
-              >
-                Действует {plan.until}
-              </div>
-            )}
-            <div className="space-y-2 my-4">
-              {plan.features.map((f) => (
-                <div key={f} className="flex items-center gap-2">
-                  <Icon
-                    name="Check"
-                    size={14}
-                    className={plan.active ? "text-white" : "text-green-500"}
-                  />
-                  <span className={`text-sm ${plan.active ? "text-white/90" : "text-gray-600"}`}>
-                    {f}
-                  </span>
+            <div className="sub-price">450 ₽ <span>/ месяц</span></div>
+            <div className="sub-desc">Оптимальный доступ ко всем<br />возможностям платформы</div>
+          </div>
+
+          <div className="sub-hero-right">
+            {[
+              { icon: "Calendar", label: "Дата начала", value: "11 апреля 2026" },
+              { icon: "CalendarCheck", label: "Дата окончания", value: "11 июня 2026" },
+              { icon: "Clock", label: "Дней осталось", value: "30 дней" },
+            ].map((item) => (
+              <div key={item.label} className="sub-meta-item">
+                <div style={{ color: "rgba(255,255,255,0.8)" }}>
+                  <Icon name={item.icon as any} size={18} />
                 </div>
-              ))}
+                <div>
+                  <div className="sub-meta-label">{item.label}</div>
+                  <div className="sub-meta-value">{item.value}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="sub-hero-bottom">
+          <div className="flex items-center justify-between mb-2">
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.85)" }}>Ваш доступ активен ещё 30 дней</span>
+            <span style={{ fontSize: 13, fontWeight: 700 }}>75%</span>
+          </div>
+          <div className="lk-progress-track">
+            <div className="lk-progress-fill" style={{ width: "75%" }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="lk-card mb-6">
+        <h2 style={{ fontFamily: "'Golos Text'", fontWeight: 700, fontSize: 18, color: "#1A1A1A", marginBottom: 16 }}>
+          Возможности тарифа
+        </h2>
+        <div className="feature-grid">
+          {features.map((f) => (
+            <div key={f.title} className="feature-item">
+              <div className="feature-icon">
+                <Icon name={f.icon as any} size={16} />
+              </div>
+              <div>
+                <div className="feature-title">{f.title}</div>
+                <div className="feature-desc">{f.desc}</div>
+              </div>
             </div>
-            {plan.active ? (
+          ))}
+        </div>
+      </div>
+
+      {/* Manage */}
+      <div className="lk-card">
+        <h2 style={{ fontFamily: "'Golos Text'", fontWeight: 700, fontSize: 18, color: "#1A1A1A", marginBottom: 4 }}>
+          Управление подпиской
+        </h2>
+        <p style={{ fontSize: 14, color: "#999", marginBottom: 20 }}>Вы можете изменить тариф или способ оплаты</p>
+        <div className="flex gap-3">
+          <button className="btn-orange">
+            <Icon name="RotateCcw" size={15} />
+            Продлить подписку
+          </button>
+          <button className="btn-outline">
+            <Icon name="ArrowLeftRight" size={15} />
+            Сменить тариф
+          </button>
+        </div>
+
+        {/* Alt plans */}
+        <div
+          className="mt-6 pt-5"
+          style={{ borderTop: "1px solid #F0F0F0" }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Icon name="Info" size={14} className="text-blue-400" />
+            <span style={{ fontSize: 13, color: "#555", fontFamily: "'Golos Text'" }}>
+              Хотите попробовать другой тариф?
+            </span>
+            <span style={{ fontSize: 12, color: "#999" }}>
+              Вы можете в любой момент перейти на другой тариф. Изменения вступят в силу в начале следующего расчётного периода.
+            </span>
+          </div>
+          <div className="flex gap-3 flex-wrap">
+            {altPlans.map((p) => (
               <button
-                className="w-full mt-2 py-2.5 rounded-xl text-sm font-semibold"
-                style={{ background: "rgba(255,255,255,0.2)", color: "white" }}
+                key={p.name}
+                className="btn-outline"
+                style={{ fontSize: 13, padding: "9px 18px", borderColor: "#D4A0F0", color: "#7C3AED" }}
               >
-                Управление подпиской
+                Перейти на «{p.name}»
               </button>
-            ) : (
-              <button
-                className="w-full mt-2 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                style={{
-                  background: "linear-gradient(135deg, #667eea, #764ba2)",
-                  color: "white",
-                }}
-              >
-                Перейти на {plan.name}
-              </button>
-            )}
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════
+   SUPPORT TAB
+═══════════════════════════════════════ */
+function SupportTab() {
+  const [message, setMessage] = useState("");
+  const [charCount, setCharCount] = useState(0);
+
+  const faqs = [
+    "Как изменить тариф?",
+    "Как отменить подписку?",
+    "Не проходит оплата",
+    "Как восстановить пароль?",
+    "Смотреть все вопросы",
+  ];
+
+  const contacts = [
+    {
+      icon: "MessageSquare",
+      bg: "#EFF6FF",
+      color: "#3B82F6",
+      title: "Онлайн-чат",
+      sub: "Мы онлайн с 9:00 до 20:00",
+    },
+    {
+      icon: "Mail",
+      bg: "#FEF3C7",
+      color: "#D97706",
+      title: "Email",
+      sub: "support@logosha.ru",
+    },
+    {
+      icon: "Phone",
+      bg: "#DCFCE7",
+      color: "#16A34A",
+      title: "Телефон",
+      sub: "+7 (123) 456-78-90",
+    },
+  ];
+
+  return (
+    <>
+      <div className="flex items-start justify-between mb-2">
+        <div>
+          <h1 className="lk-page-title">Поддержка</h1>
+          <p className="lk-page-subtitle">Мы всегда готовы помочь вам</p>
+        </div>
+      </div>
+
+      {/* Value props */}
+      <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
+        {[
+          { icon: "Zap", color: "#3B82F6", bg: "#EFF6FF", title: "Быстрый ответ", desc: "Ответим в течение 24 часов" },
+          { icon: "Shield", color: "#F5820D", bg: "rgba(245,130,13,0.1)", title: "Надёжно", desc: "Ваши данные под защитой" },
+          { icon: "Heart", color: "#EF4444", bg: "#FEE2E2", title: "С заботой", desc: "Каждый запрос важен для нас" },
+        ].map((item) => (
+          <div key={item.title} className="lk-card flex flex-col items-center text-center gap-2 py-6">
+            <div
+              style={{ width: 52, height: 52, borderRadius: 14, background: item.bg, color: item.color, display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon name={item.icon as any} size={22} />
+            </div>
+            <div style={{ fontWeight: 700, fontSize: 15, color: "#1A1A1A", fontFamily: "'Golos Text'" }}>{item.title}</div>
+            <div style={{ fontSize: 13, color: "#888" }}>{item.desc}</div>
           </div>
         ))}
       </div>
 
-      <div className="glass-card p-6">
-        <h3
-          className="font-bold text-gray-800 mb-4"
-          style={{ fontFamily: "'Golos Text', sans-serif", fontSize: 18 }}
-        >
-          История платежей
-        </h3>
-        <div className="space-y-3">
-          {history.map((h, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between p-4 rounded-2xl"
-              style={{
-                background: "rgba(102,126,234,0.04)",
-                border: "1px solid rgba(102,126,234,0.08)",
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="rounded-xl flex items-center justify-center"
-                  style={{ width: 40, height: 40, background: "rgba(102,126,234,0.1)" }}
-                >
-                  <Icon name="Receipt" size={16} className="text-indigo-500" />
-                </div>
-                <div>
-                  <div className="font-semibold text-gray-700 text-sm">Подписка {h.plan}</div>
-                  <div className="text-xs text-gray-400">{h.date}</div>
+      <div className="grid gap-6" style={{ gridTemplateColumns: "1fr 1fr" }}>
+        {/* Contact form */}
+        <div>
+          <div className="lk-card">
+            <h2 style={{ fontFamily: "'Golos Text'", fontWeight: 700, fontSize: 17, color: "#1A1A1A", marginBottom: 20 }}>
+              Отправьте нам сообщение
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="lk-label">Ваше имя</label>
+                <div className="relative">
+                  <Icon name="User" size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input className="lk-input" placeholder="Введите ваше имя" style={{ paddingLeft: 36 }} />
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-gray-800">{h.amount}</span>
-                <span className="support-status status-open">{h.status}</span>
+              <div>
+                <label className="lk-label">Email</label>
+                <div className="relative">
+                  <Icon name="Mail" size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input className="lk-input" placeholder="example@mail.com" style={{ paddingLeft: 36 }} />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Support Tab ─── */
-function SupportTab() {
-  const [message, setMessage] = useState("");
-
-  const tickets = [
-    {
-      id: "#1042",
-      subject: "Не работает загрузка файлов",
-      status: "pending" as const,
-      date: "12 апр 2026",
-      lastMessage: "Менеджер ответил: Мы проверяем проблему...",
-    },
-    {
-      id: "#1031",
-      subject: "Вопрос по тарификации Pro",
-      status: "open" as const,
-      date: "5 апр 2026",
-      lastMessage: "Вы: Спасибо, всё понял!",
-    },
-    {
-      id: "#1018",
-      subject: "Ошибка при оплате",
-      status: "closed" as const,
-      date: "20 мар 2026",
-      lastMessage: "Тикет закрыт. Проблема решена.",
-    },
-  ];
-
-  const statusLabels = {
-    open: { label: "Решён", cls: "status-open" },
-    pending: { label: "Ожидает ответа", cls: "status-pending" },
-    closed: { label: "Закрыт", cls: "status-closed" },
-  };
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 space-y-4">
-        <h2
-          className="font-bold text-gray-800 text-xl"
-          style={{ fontFamily: "'Golos Text', sans-serif" }}
-        >
-          Мои обращения
-        </h2>
-        {tickets.map((t) => {
-          const s = statusLabels[t.status];
-          return (
-            <div
-              key={t.id}
-              className="glass-card p-5 cursor-pointer hover:shadow-lg transition-all"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold text-gray-400">{t.id}</span>
-                    <span className={`support-status ${s.cls}`}>{s.label}</span>
-                  </div>
-                  <div
-                    className="font-semibold text-gray-800 mb-2"
-                    style={{ fontFamily: "'Golos Text', sans-serif" }}
-                  >
-                    {t.subject}
-                  </div>
-                  <div className="text-sm text-gray-500 truncate">{t.lastMessage}</div>
+              <div>
+                <label className="lk-label">Тема обращения</label>
+                <div className="relative">
+                  <select className="lk-input appearance-none" style={{ paddingRight: 36 }}>
+                    <option value="">Выберите тему</option>
+                    <option>Вопрос по тарифу</option>
+                    <option>Техническая проблема</option>
+                    <option>Оплата</option>
+                    <option>Другое</option>
+                  </select>
+                  <Icon name="ChevronDown" size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="text-xs text-gray-400">{t.date}</div>
-                  <Icon name="ChevronRight" size={16} className="text-gray-400 mt-2 ml-auto" />
+              </div>
+              <div>
+                <label className="lk-label">Сообщение</label>
+                <textarea
+                  className="lk-input resize-none"
+                  rows={4}
+                  placeholder="Опишите вашу проблему или вопрос..."
+                  style={{ paddingLeft: 14 }}
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                    setCharCount(e.target.value.length);
+                  }}
+                  maxLength={1000}
+                />
+                <div style={{ textAlign: "right", fontSize: 12, color: "#BBBB", marginTop: 4 }}>
+                  {charCount}/1000
                 </div>
+              </div>
+              <div
+                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer"
+                style={{ border: "1.5px dashed #E0E0E0", color: "#AAA" }}
+              >
+                <Icon name="Paperclip" size={15} />
+                <span style={{ fontSize: 13 }}>Прикрепить файл <span style={{ color: "#CCC" }}>(не более 10 МБ)</span></span>
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      <div className="glass-card p-6 h-fit">
-        <h3
-          className="font-bold text-gray-800 mb-1"
-          style={{ fontFamily: "'Golos Text', sans-serif", fontSize: 17 }}
-        >
-          Новый тикет
-        </h3>
-        <p className="text-sm text-gray-500 mb-4">
-          Опишите проблему — ответим в течение 2 часов
-        </p>
-
-        <div className="space-y-3">
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-              Тема
-            </label>
-            <input className="glass-input" placeholder="Кратко опишите тему" />
+            <div className="flex gap-3 mt-5">
+              <button className="btn-orange flex-1">
+                <Icon name="Send" size={15} />
+                Отправить сообщение
+              </button>
+              <button className="btn-outline" onClick={() => { setMessage(""); setCharCount(0); }}>
+                Очистить
+              </button>
+            </div>
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-              Сообщение
-            </label>
-            <textarea
-              className="glass-input resize-none"
-              rows={5}
-              placeholder="Подробно опишите вашу проблему или вопрос..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              style={{ paddingLeft: 16 }}
-            />
-          </div>
-          <button className="gradient-btn w-full flex items-center justify-center gap-2">
-            <Icon name="Send" size={16} />
-            Отправить обращение
-          </button>
         </div>
 
-        <div
-          className="mt-5 p-4 rounded-2xl"
-          style={{
-            background: "rgba(102,126,234,0.06)",
-            border: "1px solid rgba(102,126,234,0.1)",
-          }}
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <Icon name="Clock" size={14} className="text-indigo-400" />
-            <span className="text-xs font-semibold text-indigo-600">Время ответа</span>
+        {/* FAQ + contacts */}
+        <div className="space-y-4">
+          <div className="lk-card">
+            <div className="flex items-center justify-between mb-1">
+              <h2 style={{ fontFamily: "'Golos Text'", fontWeight: 700, fontSize: 17, color: "#1A1A1A" }}>
+                Часто задаваемые вопросы
+              </h2>
+            </div>
+            <div>
+              {faqs.map((q, i) => (
+                <div key={q} className="faq-item">
+                  <span>{i === faqs.length - 1 ? <span style={{ color: "var(--orange)" }}>{q}</span> : q}</span>
+                  <Icon name={i === faqs.length - 1 ? "ExternalLink" : "ChevronRight"} size={16} className="text-gray-400 flex-shrink-0" />
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="text-xs text-gray-500">
-            Пн–Пт: <strong>до 2 часов</strong>
-            <br />
-            Выходные: <strong>до 24 часов</strong>
+
+          <div className="lk-card">
+            <h2 style={{ fontFamily: "'Golos Text'", fontWeight: 700, fontSize: 17, color: "#1A1A1A", marginBottom: 14 }}>
+              Другие способы связи
+            </h2>
+            <div className="space-y-3">
+              {contacts.map((c) => (
+                <div key={c.title} className="contact-card">
+                  <div className="contact-icon" style={{ background: c.bg, color: c.color }}>
+                    <Icon name={c.icon as any} size={20} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: "#1A1A1A", fontFamily: "'Golos Text'" }}>{c.title}</div>
+                    <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>{c.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Help banner */}
+      <div className="help-banner mt-6">
+        <div>
+          <div style={{ fontFamily: "'Golos Text'", fontWeight: 800, fontSize: 20, color: "#1A1A1A", marginBottom: 6 }}>
+            Мы рады, чтобы помочь!
+          </div>
+          <div style={{ fontSize: 14, color: "#666" }}>
+            Большой опыт работы в области с детьми.<br />
+            Напишите нам или позвоните — всегда на связи!
+          </div>
+        </div>
+        <div style={{ fontSize: 64, flexShrink: 0 }}>🦕</div>
+      </div>
+    </>
   );
 }
