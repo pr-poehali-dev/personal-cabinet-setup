@@ -364,8 +364,100 @@
   gap: 8px;
 }
 .btn-outline:hover {
-  border-color: #aaaa;
+  border-color: #bbb;
   background: #fafafa;
+}
+
+.btn-lavender {
+  background: var(--lavender-bg);
+  color: var(--lavender);
+  border: 1.5px solid var(--lavender-border);
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Golos Text", sans-serif;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-lavender:hover {
+  background: var(--lavender);
+  color: #fff;
+  border-color: var(--lavender);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(179, 157, 219, 0.4);
+}
+
+.btn-mint {
+  background: var(--mint-bg);
+  color: var(--mint);
+  border: 1.5px solid var(--mint-border);
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Golos Text", sans-serif;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-mint:hover {
+  background: var(--mint);
+  color: #fff;
+  border-color: var(--mint);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(109, 207, 176, 0.4);
+}
+
+.btn-coral {
+  background: var(--coral-bg);
+  color: var(--coral);
+  border: 1.5px solid var(--coral-border);
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Golos Text", sans-serif;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-coral:hover {
+  background: var(--coral);
+  color: #fff;
+  border-color: var(--coral);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 127, 114, 0.4);
+}
+
+.btn-sky {
+  background: var(--sky-bg);
+  color: var(--sky);
+  border: 1.5px solid var(--sky-border);
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Golos Text", sans-serif;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-sky:hover {
+  background: var(--sky);
+  color: #fff;
+  border-color: var(--sky);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(100, 181, 246, 0.4);
 }
 
 /* ── Inputs ── */

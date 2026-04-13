@@ -247,7 +247,7 @@ function ProfileTab({
             </div>
           </div>
           <div className="flex gap-3 mt-6">
-            <button className="btn-outline" onClick={() => setForm(data)}>Отменить</button>
+            <button className="btn-coral" style={{ fontSize: 14, padding: "10px 20px" }} onClick={() => setForm(data)}>Отменить</button>
             <button className="btn-orange" onClick={() => setData(form)}>Сохранить</button>
           </div>
         </div>
@@ -296,7 +296,7 @@ function ProfileTab({
             </div>
           </div>
           <div className="flex gap-3 mt-6">
-            <button className="btn-outline">Отменить</button>
+            <button className="btn-coral" style={{ fontSize: 14, padding: "10px 20px" }}>Отменить</button>
             <button className="btn-orange">Сохранить</button>
           </div>
         </div>
@@ -330,7 +330,7 @@ function SubscriptionsTab() {
           <h1 className="lk-page-title">Мои подписки</h1>
           <p className="lk-page-subtitle">Управляйте своими подписками и тарифами</p>
         </div>
-        <button className="btn-outline" style={{ fontSize: 13, padding: "9px 16px" }}>
+        <button className="btn-mint" style={{ fontSize: 13, padding: "9px 16px" }}>
           <Icon name="Receipt" size={14} />
           История платежей
         </button>
@@ -410,7 +410,7 @@ function SubscriptionsTab() {
             <Icon name="RotateCcw" size={15} />
             Продлить подписку
           </button>
-          <button className="btn-outline">
+          <button className="btn-lavender">
             <Icon name="ArrowLeftRight" size={15} />
             Сменить тариф
           </button>
@@ -431,11 +431,11 @@ function SubscriptionsTab() {
             </span>
           </div>
           <div className="flex gap-3 flex-wrap">
-            {altPlans.map((p) => (
+            {altPlans.map((p, i) => (
               <button
                 key={p.name}
-                className="btn-outline"
-                style={{ fontSize: 13, padding: "9px 18px", borderColor: "#D4A0F0", color: "#7C3AED" }}
+                className={i % 2 === 0 ? "btn-lavender" : "btn-mint"}
+                style={{ fontSize: 13, padding: "9px 18px" }}
               >
                 Перейти на «{p.name}»
               </button>
@@ -580,7 +580,7 @@ function SupportTab() {
                 <Icon name="Send" size={15} />
                 Отправить сообщение
               </button>
-              <button className="btn-outline" onClick={() => { setMessage(""); setCharCount(0); }}>
+              <button className="btn-sky" style={{ fontSize: 14, padding: "10px 18px" }} onClick={() => { setMessage(""); setCharCount(0); }}>
                 Очистить
               </button>
             </div>
